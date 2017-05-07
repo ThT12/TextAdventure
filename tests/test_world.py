@@ -2,7 +2,7 @@ from unittest import TestCase
 from unittest.mock import patch
 import random
 
-from textadventure.world import World
+from textadventure.world import World, find_direction
 from textadventure.directions import Direction
 
 
@@ -45,16 +45,16 @@ class TestGame(TestCase):
 class TestWorldGenerator(TestCase):
     def setUp(self):
         self.my_world = World()
-        self.world_size = self.my_world.init_default_word(lvl=1)
+        self.my_world.init_default_word(lvl=1)
 
     def test_init_default_word(self):
         len_world = 4
-        self.assertEqual(self.world_size, [len_world, len_world])
+        self.assertEqual(self.my_world.world_size, [len_world, len_world])
         self.assertEqual(self.my_world.room_table.shape, (len_world, len_world))
 
     def test_init_hero_pos(self):
         random.seed(1)
-        hero_pos = self.my_world.init_hero_pos(nb_col=self.world_size[0])
+        hero_pos = self.my_world.init_hero_pos(nb_col=self.my_world.world_size[0])
         exp_x = 0
         exp_y = 1
         self.assertEqual(self.my_world.hero.current_room, self.my_world.room_table[exp_x, exp_y])
@@ -62,7 +62,7 @@ class TestWorldGenerator(TestCase):
 
     def test_init_win_pos(self):
         random.seed(1)
-        win_pos = self.my_world.init_win_pos(self.world_size)
+        win_pos = self.my_world.init_win_pos(self.my_world.world_size)
         exp_x = 3
         exp_y = 1
         self.assertTrue(self.my_world.room_table[exp_x, exp_y].is_win)
@@ -77,6 +77,17 @@ class TestWorldGenerator(TestCase):
         list_room_way = self.my_world.build_main_way()
         self.assertTrue(list_room_way[1], [0, 0])
         self.assertTrue((list_room_way[-1], [3, 3]))
+
+    @patch("textadventure.world.find_direction")
+    def test_apply_way(self, mock_find_direction):
+        mock_find_direction.side_effect = [Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST,
+                                           Direction.NORTH, Direction.SOUTH]
+        way = [[0, 0], [1,0], [2, 0], [2, 1]]
+        self.my_world.apply_way(way)
+        self.assertEqual(self.my_world.room_table[0, 0].directions, [Direction.NORTH])
+        self.assertEqual(self.my_world.room_table[1, 0].directions, [Direction.NORTH, Direction.SOUTH])
+        self.assertEqual(self.my_world.room_table[2, 0].directions, [Direction.WEST, Direction.EAST])
+        self.assertEqual(self.my_world.room_table[2, 1].directions, [Direction.SOUTH])
 
 
 class TestIsInsideWorld(TestCase):
@@ -102,3 +113,20 @@ class TestIsInsideWorld(TestCase):
     def test_is_inside_world_false_y_sup_max(self):
         pos = [2, 4]
         self.assertFalse(self.my_world.is_inside_world(pos))
+
+
+class TestFindDirection(TestCase):
+    def test_find_direction_N(self):
+        self.assertEqual(find_direction([1, 0],[2, 0]), Direction.NORTH)
+
+    def test_find_direction_S(self):
+        self.assertEqual(find_direction([1, 0],[0, 0]), Direction.SOUTH)
+
+    def test_find_direction_E(self):
+        self.assertEqual(find_direction([1, 1],[1, 2]), Direction.EAST)
+
+    def test_find_direction_W(self):
+        self.assertEqual(find_direction([1, 1],[1, 0]), Direction.WEST)
+
+    def test_find_direction_error(self):
+        self.assertRaises(ValueError)

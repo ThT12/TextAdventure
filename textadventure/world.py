@@ -56,8 +56,8 @@ class World:
             self.hero = Hero(name, self.room_table[init_x_pos, init_y_pos])
             self.world_size = [4, 4]
         else:
-            self.generate_world(world_lvl)
             self.hero = Hero(name)
+            self.generate_world(world_lvl)
 
     @property
     def room_table(self):
@@ -102,6 +102,7 @@ class World:
         hero_init_pos = self.init_hero_pos(self.world_size[1])
         win_pos = self.init_win_pos(self.world_size)
         way = self.build_main_way()
+        self.apply_way(way)
 
     def init_default_word(self, lvl: int):
         nb_row = lvl * 4
@@ -148,3 +149,24 @@ class World:
         if pos[0] < 0 or pos[0] >= self.world_size[0] or pos[1] < 0 or pos[1] >= self.world_size[1]:
             return False
         return True
+
+    def apply_way(self, way: [[int]]):
+        for i in range(1, len(way) - 1):
+            self.room_table[way[i][0], way[i][1]].directions = [find_direction(way[i], way[i-1]),
+                                                                find_direction(way[i], way[i+1])]
+        self.room_table[way[0][0], way[0][1]].directions = [find_direction(way[0], way[1])]
+        self.room_table[way[-1][0], way[-1][1]].directions = [find_direction(way[-1], way[-2])]
+
+
+def find_direction(loc1: [int], loc2: [int]):
+    diff = [y - x for x, y in zip(loc1, loc2)]
+    if diff[0] == 1 and diff[1] == 0:
+        return Direction.NORTH
+    elif diff[0] == -1 and diff[1] == 0:
+        return Direction.SOUTH
+    elif diff[0] == 0 and diff[1] == 1:
+        return Direction.EAST
+    elif diff[0] == 0 and diff[1] == -1:
+        return Direction.WEST
+    else:
+        raise ValueError("Location not join")
