@@ -43,29 +43,62 @@ class TestGame(TestCase):
 
 
 class TestWorldGenerator(TestCase):
+    def setUp(self):
+        self.my_world = World()
+        self.world_size = self.my_world.init_default_word(lvl=1)
+
     def test_init_default_word(self):
-        my_world = World()
-        world_size = my_world.init_default_word(lvl=1)
         len_world = 4
-        self.assertEqual(world_size, [len_world, len_world])
-        self.assertEqual(my_world.room_table.shape, (len_world, len_world))
+        self.assertEqual(self.world_size, [len_world, len_world])
+        self.assertEqual(self.my_world.room_table.shape, (len_world, len_world))
 
     def test_init_hero_pos(self):
         random.seed(1)
-        my_world = World()
-        world_size = my_world.init_default_word(lvl=1)
-        hero_pos = my_world.init_hero_pos(nb_col=world_size[0])
+        hero_pos = self.my_world.init_hero_pos(nb_col=self.world_size[0])
         exp_x = 0
         exp_y = 1
-        self.assertEqual(my_world.hero.current_room, my_world.room_table[exp_x, exp_y])
+        self.assertEqual(self.my_world.hero.current_room, self.my_world.room_table[exp_x, exp_y])
         self.assertEqual(hero_pos, [exp_x, exp_y])
 
     def test_init_win_pos(self):
         random.seed(1)
-        my_world = World()
-        world_size = my_world.init_default_word(lvl=1)
-        win_pos = my_world.init_win_pos(world_size)
+        win_pos = self.my_world.init_win_pos(self.world_size)
         exp_x = 3
         exp_y = 1
-        self.assertTrue(my_world.room_table[exp_x, exp_y].is_win)
+        self.assertTrue(self.my_world.room_table[exp_x, exp_y].is_win)
         self.assertEqual(win_pos, [exp_x, exp_y])
+
+    def test_build_main_way(self):
+        random.seed(4)
+        hero_init_pos = [0, 0]
+        self.my_world.hero.current_room = self.my_world.room_table[hero_init_pos[0], hero_init_pos[1]]
+        win_pos = [3, 3]
+        self.my_world.room_table[win_pos[0], win_pos[1]].is_win = True
+        list_room_way = self.my_world.build_main_way()
+        self.assertTrue(list_room_way[1], [0, 0])
+        self.assertTrue((list_room_way[-1], [3, 3]))
+
+
+class TestIsInsideWorld(TestCase):
+    def setUp(self):
+        self.my_world = World()
+
+    def test_is_inside_world_true(self):
+        pos = [2, 3]
+        self.assertTrue(self.my_world.is_inside_world(pos))
+
+    def test_is_inside_world_false_x_inf_0(self):
+        pos = [-1, 3]
+        self.assertFalse(self.my_world.is_inside_world(pos))
+
+    def test_is_inside_world_false_y_inf_0(self):
+        pos = [2, -1]
+        self.assertFalse(self.my_world.is_inside_world(pos))
+
+    def test_is_inside_world_false_x_sup_max(self):
+        pos = [4, 3]
+        self.assertFalse(self.my_world.is_inside_world(pos))
+
+    def test_is_inside_world_false_y_sup_max(self):
+        pos = [2, 4]
+        self.assertFalse(self.my_world.is_inside_world(pos))

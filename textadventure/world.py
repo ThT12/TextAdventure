@@ -54,6 +54,7 @@ class World:
             self.room_table = numpy.matrix([[room1, room2, room3, room4], [room5, Room(), room7, room8],
                                             [room9, room10, room11, room12], [Room(), room14, room15, room16]], dtype=Room)
             self.hero = Hero(name, self.room_table[init_x_pos, init_y_pos])
+            self.world_size = [4, 4]
         else:
             self.generate_world(world_lvl)
             self.hero = Hero(name)
@@ -97,9 +98,10 @@ class World:
         return new_room
 
     def generate_world(self, lvl: int):
-        world_size = self.init_default_word(lvl)
-        hero_init_pos = self.init_hero_pos(world_size[1])
-        win_pos = self.init_win_pos(world_size)
+        self.world_size = self.init_default_word(lvl)
+        hero_init_pos = self.init_hero_pos(self.world_size[1])
+        win_pos = self.init_win_pos(self.world_size)
+        way = self.build_main_way()
 
     def init_default_word(self, lvl: int):
         nb_row = lvl * 4
@@ -118,3 +120,31 @@ class World:
         win_x = random.randint(math.floor(world_size[0]/3), world_size[0]-1)
         self.room_table[win_x, win_y].is_win = True
         return [win_x, win_y]
+
+    def build_main_way(self):
+        hero_init_pos = [self.hero.current_room.x_pos, self.hero.current_room.y_pos]
+        list_all_tested_room = [hero_init_pos]
+        final_way = [hero_init_pos]
+        current_room = self.room_table[hero_init_pos[0], hero_init_pos[1]]
+        current_pos = hero_init_pos.copy()
+        while not current_room.is_win:
+            all_mod = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+            mod_available = []
+            for mod in all_mod:
+                new_pos = [x + y for x, y in zip(current_pos, mod)]
+                if new_pos not in list_all_tested_room and self.is_inside_world(new_pos):
+                    mod_available.append(mod)
+            if len(mod_available) == 0:
+                final_way.remove(current_pos)
+                current_pos = final_way[-1]
+            else:
+                current_pos = [x + y for x, y in zip(current_pos, random.choice(mod_available))]
+                list_all_tested_room.append(current_pos)
+                final_way.append(current_pos)
+            current_room = self.room_table[current_pos[0], current_pos[1]]
+        return final_way
+
+    def is_inside_world(self, pos: [int]):
+        if pos[0] < 0 or pos[0] >= self.world_size[0] or pos[1] < 0 or pos[1] >= self.world_size[1]:
+            return False
+        return True
