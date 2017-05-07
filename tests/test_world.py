@@ -59,3 +59,13 @@ class TestWorldGenerator(TestCase):
         exp_y = 1
         self.assertEqual(my_world.hero.current_room, my_world.room_table[exp_x, exp_y])
         self.assertEqual(hero_pos, [exp_x, exp_y])
+
+    def test_init_win_pos(self):
+        random.seed(1)
+        my_world = World()
+        world_size = my_world.init_default_word(lvl=1)
+        win_pos = my_world.init_win_pos(world_size)
+        exp_x = 3
+        exp_y = 1
+        self.assertTrue(my_world.room_table[exp_x, exp_y].is_win)
+        self.assertEqual(win_pos, [exp_x, exp_y])

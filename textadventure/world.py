@@ -1,5 +1,6 @@
 import numpy
 import random
+import math
 
 from .directions import Direction
 from .hero import Hero
@@ -98,6 +99,7 @@ class World:
     def generate_world(self, lvl: int):
         world_size = self.init_default_word(lvl)
         hero_init_pos = self.init_hero_pos(world_size[1])
+        win_pos = self.init_win_pos(world_size)
 
     def init_default_word(self, lvl: int):
         nb_row = lvl * 4
@@ -110,3 +112,9 @@ class World:
         init_x_pos = 0
         self.hero.current_room = self.room_table[init_x_pos, init_y_pos]
         return [init_x_pos, init_y_pos]
+
+    def init_win_pos(self, world_size: [int]):
+        win_y = random.randint(0, world_size[1] - 1)
+        win_x = random.randint(math.floor(world_size[0]/3), world_size[0]-1)
+        self.room_table[win_x, win_y].is_win = True
+        return [win_x, win_y]
