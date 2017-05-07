@@ -47,7 +47,7 @@ class TestWorldGenerator(TestCase):
         my_world = World()
         world_size = my_world.init_default_word(lvl=1)
         len_world = 4
-        self.assertEqual(world_size,[len_world, len_world])
+        self.assertEqual(world_size, [len_world, len_world])
         self.assertEqual(my_world.room_table.shape, (len_world, len_world))
 
     def test_init_hero_pos(self):
@@ -57,5 +57,5 @@ class TestWorldGenerator(TestCase):
         hero_pos = my_world.init_hero_pos(nb_col=world_size[0])
         exp_x = 0
         exp_y = 1
-        self.assertEqual(my_world.hero.current_room,my_world.room_table[exp_x, exp_y])
-        self.assertEqual(hero_pos,[exp_x, exp_y])
+        self.assertEqual(my_world.hero.current_room, my_world.room_table[exp_x, exp_y])
+        self.assertEqual(hero_pos, [exp_x, exp_y])

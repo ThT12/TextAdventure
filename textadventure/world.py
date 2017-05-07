@@ -109,4 +109,4 @@ class World:
         init_y_pos = random.randint(0, nb_col - 1)
         init_x_pos = 0
         self.hero.current_room = self.room_table[init_x_pos, init_y_pos]
-        return  [init_x_pos, init_y_pos]
+        return [init_x_pos, init_y_pos]
