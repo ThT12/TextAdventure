@@ -181,7 +181,7 @@ class World:
                 continue
             loc_end_second_way = [x + y for x, y in zip(loc_start_second_way, random.choice(mod_available))]
             self.apply_way([loc_start_second_way, loc_end_second_way])
-            way_out.append(loc_end_second_way)
+            way_out.insert(way_out.index(loc_start_second_way)+1, loc_end_second_way)
         return way_out
 
     def sort_room_direction(self):
