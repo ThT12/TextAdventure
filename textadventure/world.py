@@ -114,6 +114,7 @@ class World:
         way = self.build_main_way()
         self.apply_way(way)
         all_way = self.add_secondary_ways(way, lvl * 20)
+        self.sort_room_direction()
 
     def init_default_word(self, lvl: int):
         nb_row = lvl * 4
@@ -182,6 +183,10 @@ class World:
             self.apply_way([loc_start_second_way, loc_end_second_way])
             way_out.append(loc_end_second_way)
         return way_out
+
+    def sort_room_direction(self):
+        for (x, y), value in numpy.ndenumerate(self.room_table):
+            self.room_table[x, y].sort_direction()
 
 
 def find_direction(loc1: [int], loc2: [int]):

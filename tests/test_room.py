@@ -79,3 +79,8 @@ class TestRoom(TestCase):
         my_room = Room(condition_to_enter=Obj.RANDOM_KEY)
         my_room.delete_condition_to_enter()
         self.assertIsNone(my_room.condition_to_enter)
+
+    def test_sort_direction(self):
+        my_room = Room(directions=[Direction.SOUTH, Direction.NORTH, Direction.WEST, Direction.EAST])
+        my_room.sort_direction()
+        self.assertEqual(my_room.directions, [Direction.WEST, Direction.NORTH, Direction.EAST, Direction.SOUTH])

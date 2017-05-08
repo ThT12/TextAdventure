@@ -113,6 +113,13 @@ class TestWorldGenerator(TestCase):
         self.assertTrue(Direction.SOUTH in self.my_world.room_table[3, 0].directions)
         self.assertTrue(Direction.NORTH in self.my_world.room_table[2, 0].directions)
 
+    def test_sort_room_direction(self):
+        self.my_world.room_table[0, 0].directions = [Direction.EAST, Direction.NORTH]
+        self.my_world.room_table[3, 3].directions = [Direction.WEST, Direction.SOUTH, Direction.NORTH]
+        self.my_world.sort_room_direction()
+        self.assertTrue(self.my_world.room_table[0, 0].directions, sorted(self.my_world.room_table[0, 0].directions))
+        self.assertTrue(self.my_world.room_table[3, 3].directions, sorted(self.my_world.room_table[3, 3].directions))
+
 
 class TestIsInsideWorld(TestCase):
     def setUp(self):

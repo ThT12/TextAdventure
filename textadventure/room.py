@@ -59,3 +59,6 @@ class Room:
 
     def delete_condition_to_enter(self):
         self.condition_to_enter = None
+
+    def sort_direction(self):
+        self.directions = sorted(self.directions)
