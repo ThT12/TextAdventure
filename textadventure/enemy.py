@@ -2,7 +2,7 @@ from .obj import Obj
 
 
 class Enemy:
-    def __init__(self, name: str='Enemy', kill_by: Obj=Obj.GUN, context: str='I\'m the monster!'):
+    def __init__(self, name: str='Enemy', kill_by: Obj=Obj(), context: str='I\'m the monster!'):
         self.name = name
         self.kill_by = kill_by
         self.context = context

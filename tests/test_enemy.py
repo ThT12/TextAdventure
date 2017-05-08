@@ -6,9 +6,9 @@ from textadventure.obj import Obj
 
 class TestEnemy(TestCase):
     def test_win_fight(self):
-        my_enemy = Enemy(kill_by=Obj.GUN)
-        self.assertTrue(my_enemy.is_win_fight(Obj.GUN))
+        my_enemy = Enemy(kill_by=Obj())
+        self.assertTrue(my_enemy.is_win_fight(Obj()))
 
     def test_loose_fight(self):
-        my_enemy = Enemy(kill_by=Obj.GUN)
-        self.assertFalse(my_enemy.is_win_fight(Obj.RANDOM_KEY))
+        my_enemy = Enemy(kill_by=Obj('Obj1'))
+        self.assertFalse(my_enemy.is_win_fight(Obj('Obj2')))

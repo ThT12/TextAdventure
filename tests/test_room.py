@@ -66,7 +66,7 @@ class TestActionRoomTwice(TestCase):
 
 class TestRoom(TestCase):
     def test_delete_key(self):
-        my_room = Room(obj_in_room=Obj.BATHROOM_KEY)
+        my_room = Room(obj_in_room=Obj())
         my_room.delete_obj()
         self.assertIsNone(my_room.obj_in_room)
 

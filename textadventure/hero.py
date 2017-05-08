@@ -29,7 +29,7 @@ class Hero:
         print('What do you want to use?')
         obj_used = self.use_obj_inv(is_punch=False)
         if room.condition_to_enter == obj_used:
-            print(''.join(['You open the door with the ', obj_used.value, '!']))
+            print(''.join(['You open the door with the ', obj_used.name, '!']))
             return True
         else:
             print('Nothing happen!')
@@ -46,7 +46,7 @@ class Hero:
     def pick_obj(self):
         if self.current_room.obj_in_room is not None:
             print('Object found:')
-            print(''.join(['You found the ', self.current_room.obj_in_room.value, '!']))
+            print(''.join(['You found the ', self.current_room.obj_in_room.name, '!']))
             self.inventory.append(self.current_room.obj_in_room)
             self.current_room.delete_obj()
 
@@ -69,15 +69,15 @@ class Hero:
 
     def use_obj_inv(self, is_punch: bool = False):
         template_display = '%-2i - %s'
-        list_inv = [template_display % (iInv+1, self.inventory[iInv].value) for iInv in range(len(self.inventory))]
+        list_inv = [template_display % (iInv+1, self.inventory[iInv].name) for iInv in range(len(self.inventory))]
         if is_punch:
-            list_inv.append(template_display % (len(self.inventory) + 1, Obj.PUNCH.value))
+            list_inv.append(template_display % (len(self.inventory) + 1, 'Punch'))
         print('\n'.join(list_inv))
         while True:
             try:
                 choice = int(input()) - 1
                 if is_punch and choice == len(self.inventory):
-                    choice = Obj.PUNCH
+                    choice = Obj(name='Punch')
                 else:
                     choice = self.inventory[choice]
                 break

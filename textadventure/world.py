@@ -22,11 +22,11 @@ class World:
                          'a door in front of you or you can just go back.',
                          [Direction.WEST, Direction.EAST])
             room1 = Room('Closet', 'You found a closet with a lot of cooking stuff. You have to go back',
-                         [Direction.EAST], obj_in_room=Obj.DOM_ROOM_KEY)
+                         [Direction.EAST], obj_in_room=Obj('Domestic Room\'s Key'))
             room4 = Room('Domestic Chamber',
                          'You enter into a small chamber with a simple bed and a piece of furniture and'
                          ' a small window. There is a book on a chair close to the bed.',
-                         [Direction.WEST], obj_in_room=Obj.GUN, condition_to_enter=Obj.DOM_ROOM_KEY)
+                         [Direction.WEST], obj_in_room=Obj('Gun'), condition_to_enter=Obj('Domestic Room\'s Key'))
             room7 = Room('Living room',
                          'This is the first part of the living room. There is shelf on the wall  with a lot '
                          'of books. You can explore the living room in two directions',
@@ -40,7 +40,7 @@ class World:
                           'can see three half empty glasses. You see a close chest under the windows.',
                           [Direction.WEST, Direction.NORTH, Direction.SOUTH])
             room16 = Room('Chest', 'You open the chest and found bottles of alcohol.',
-                          [Direction.SOUTH], obj_in_room=Obj.BATHROOM_KEY)
+                          [Direction.SOUTH], obj_in_room=Obj('Bathroom\'s Key'))
             room11 = Room('Living room',
                           'This is another part of the living room. You can see a stair going down in North '
                           'and a long hallway in the West.',
@@ -49,7 +49,7 @@ class World:
                           [Direction.SOUTH])
             room10 = Room('Hallway', 'A simple hallway with chandelier give access to two rooms.',
                           [Direction.WEST, Direction.NORTH, Direction.EAST],
-                          enemy=Enemy('Zombie', Obj.GUN, 'A Zombie come from the North and jump on you!'))
+                          enemy=Enemy('Zombie', Obj('Gun'), 'A Zombie come from the North and jump on you!'))
             room14 = Room('Children Chamber', 'An empty children chamber with a lot of toys on the floor.',
                           [Direction.SOUTH])
             room9 = Room('Adults Chamber', 'A big room with a double bed. You can see a light passing though a door in '
@@ -58,7 +58,7 @@ class World:
             room5 = Room('Bathroom',
                          'You open the door and find a bathroom. You discover the girl afraid and crying! You '
                          'saved her!',
-                         [Direction.EAST, Direction.SOUTH], condition_to_enter=Obj.BATHROOM_KEY, is_win=True)
+                         [Direction.EAST, Direction.SOUTH], condition_to_enter=Obj('Bathroom\'s Key'), is_win=True)
             self.__room_table = None
             self.room_table = numpy.matrix([[room1, room2, room3, room4], [room5, Room(), room7, room8],
                                             [room9, room10, room11, room12], [Room(), room14, room15, room16]],
