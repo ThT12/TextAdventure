@@ -4,6 +4,7 @@ import random
 
 from textadventure.world import World, find_direction
 from textadventure.directions import Direction
+from textadventure.obj import Obj
 
 
 class TestWorld(TestCase):
@@ -120,6 +121,22 @@ class TestWorldGenerator(TestCase):
         self.my_world.sort_room_direction()
         self.assertTrue(self.my_world.room_table[0, 0].directions, sorted(self.my_world.room_table[0, 0].directions))
         self.assertTrue(self.my_world.room_table[3, 3].directions, sorted(self.my_world.room_table[3, 3].directions))
+
+    def test_add_lock_door_with_dead_end(self):
+        random.seed(5)
+        all_way = [[0, 0], [0, 1], [1, 0], [1, 1], [2, 0]]
+        nb_lock = 1
+        self.my_world.add_lock_door(all_way, nb_lock)
+        self.assertEqual(self.my_world.room_table[1, 1].condition_to_enter, Obj('Key 0'))
+        self.assertEqual(self.my_world.room_table[1, 0].obj_in_room, Obj('Key 0'))
+
+    def test_add_lock_door_without_dead_end(self):
+        random.seed(5)
+        all_way = [[0, 0], [0, 1], [0, 2], [0, 3], [1, 3]]
+        nb_lock = 1
+        self.my_world.add_lock_door(all_way, nb_lock)
+        self.assertEqual(self.my_world.room_table[0, 3].condition_to_enter, Obj('Key 0'))
+        self.assertEqual(self.my_world.room_table[0, 1].obj_in_room, Obj('Key 0'))
 
 
 class TestIsInsideWorld(TestCase):

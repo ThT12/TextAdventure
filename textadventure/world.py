@@ -115,6 +115,7 @@ class World:
         self.apply_way(way)
         all_way = self.add_secondary_ways(way, lvl * 20)
         self.sort_room_direction()
+        self.add_lock_door(all_way, lvl)
 
     def init_default_word(self, lvl: int):
         nb_row = lvl * 4
@@ -187,6 +188,23 @@ class World:
     def sort_room_direction(self):
         for (x, y), value in numpy.ndenumerate(self.room_table):
             self.room_table[x, y].sort_direction()
+
+    def add_lock_door(self, all_way: [[int]], nb_lock: int):
+        diff_loc = []
+        for i in range(len(all_way) - 1):
+            diff_loc.append(sum([abs(x - y) for x, y in zip(all_way[i], all_way[i + 1])]))
+        for i in range(nb_lock):
+            loc_add_lock = random.choice(all_way[1:])
+            key = Obj('Key %d' % i)
+            index_loc_max_to_add_key = all_way.index(loc_add_lock)-1
+            dead_end_available = [x for x in diff_loc[:index_loc_max_to_add_key] if x != 1]
+            if dead_end_available:
+                index_add_key = random.choice(dead_end_available)
+                loc_add_key = all_way[index_add_key]
+            else:
+                loc_add_key = random.choice(all_way[:index_loc_max_to_add_key])
+            self.room_table[loc_add_lock[0], loc_add_lock[1]].condition_to_enter = key
+            self.room_table[loc_add_key[0], loc_add_key[1]].obj_in_room = key
 
 
 def find_direction(loc1: [int], loc2: [int]):
