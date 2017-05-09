@@ -14,9 +14,10 @@ class TestHero(TestCase):
     def test_entry_allowed(self, mock_verify_entry):
         mock_verify_entry.return_value = True
         my_hero = Hero(room=Room('Init Room'))
-        move_room = Room('Move room')
+        move_room = Room('Move room', condition_to_enter=Obj.RANDOM_KEY)
         my_hero.entry(move_room)
         self.assertEqual(my_hero.current_room, move_room)
+        self.assertIsNone(move_room.condition_to_enter)
 
     @patch.object(Hero, "verify_entry")
     @patch('builtins.input')
@@ -25,9 +26,10 @@ class TestHero(TestCase):
         mock_input.return_value = None
         init_room = Room('Init Room')
         my_hero = Hero(room=init_room)
-        move_room = Room('Move room')
+        move_room = Room(name='Move room', condition_to_enter=Obj.RANDOM_KEY)
         my_hero.entry(move_room)
         self.assertEqual(my_hero.current_room, init_room)
+        self.assertIsNotNone(move_room.condition_to_enter)
 
     def test_verify_entry_no_key_needed(self):
         my_hero = Hero(inventory=[])

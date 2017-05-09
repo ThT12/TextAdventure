@@ -14,6 +14,7 @@ class Hero:
     def entry(self, room: Room):
         if self.verify_entry(room):
             self.current_room = room
+            self.current_room.delete_condition_to_enter()
         else:
             input('Press enter to continue...')
 

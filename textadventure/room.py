@@ -56,3 +56,6 @@ class Room:
 
     def delete_enemy(self):
         self.enemy = None
+
+    def delete_condition_to_enter(self):
+        self.condition_to_enter = None
