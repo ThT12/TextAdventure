@@ -197,7 +197,7 @@ class World:
             loc_add_lock = random.choice(all_way[1:])
             key = Obj('Key %d' % i)
             index_loc_max_to_add_key = all_way.index(loc_add_lock)-1
-            dead_end_available = [x for x in diff_loc[:index_loc_max_to_add_key] if x != 1]
+            dead_end_available = [i for i in range(index_loc_max_to_add_key) if diff_loc[i] != 1]
             if dead_end_available:
                 index_add_key = random.choice(dead_end_available)
                 loc_add_key = all_way[index_add_key]

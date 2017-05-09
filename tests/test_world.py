@@ -128,7 +128,7 @@ class TestWorldGenerator(TestCase):
         nb_lock = 1
         self.my_world.add_lock_door(all_way, nb_lock)
         self.assertEqual(self.my_world.room_table[1, 1].condition_to_enter, Obj('Key 0'))
-        self.assertEqual(self.my_world.room_table[1, 0].obj_in_room, Obj('Key 0'))
+        self.assertEqual(self.my_world.room_table[0, 1].obj_in_room, Obj('Key 0'))
 
     def test_add_lock_door_without_dead_end(self):
         random.seed(5)
