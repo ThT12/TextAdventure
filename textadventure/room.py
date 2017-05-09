@@ -29,7 +29,7 @@ class Room:
         print('Where do you want to go ?')
         print('\n'.join(self.directions))
         valid_input = False
-        direction_choose: Direction
+        direction_choose = None
         while not valid_input:
             user_choice = input()
             if user_choice in ['N', 'North']:
