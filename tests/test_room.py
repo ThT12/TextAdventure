@@ -76,7 +76,7 @@ class TestRoom(TestCase):
         self.assertIsNone(my_room.enemy)
 
     def test_delete_condition_to_enter(self):
-        my_room = Room(condition_to_enter=Obj.RANDOM_KEY)
+        my_room = Room(condition_to_enter=Obj())
         my_room.delete_condition_to_enter()
         self.assertIsNone(my_room.condition_to_enter)
 
