@@ -12,7 +12,7 @@ from .enemy import Enemy
 class World:
     ALL_MOD = [[1, 0], [-1, 0], [0, 1], [0, -1]]
 
-    def __init__(self, name: str=None, init_x_pos: int=0, init_y_pos: int=2, world_lvl: int=None):
+    def __init__(self, name: str = None, init_x_pos: int = 0, init_y_pos: int = 2, world_lvl: int = None):
         if world_lvl is None:
             room3 = Room('Start', 'You just enter into a manor! You are in a big room with a nice carpet. The door '
                                   'behind you close itself. You now have to choose in three direction.',
@@ -98,13 +98,13 @@ class World:
         old_y_pos = self.hero.current_room.y_pos
         new_room = None
         if direction == Direction.NORTH:
-            new_room = self.room_table[old_x_pos+1, old_y_pos]
+            new_room = self.room_table[old_x_pos + 1, old_y_pos]
         elif direction == Direction.EAST:
-            new_room = self.room_table[old_x_pos, old_y_pos+1]
+            new_room = self.room_table[old_x_pos, old_y_pos + 1]
         elif direction == Direction.SOUTH:
-            new_room = self.room_table[old_x_pos-1, old_y_pos]
+            new_room = self.room_table[old_x_pos - 1, old_y_pos]
         elif direction == Direction.WEST:
-            new_room = self.room_table[old_x_pos, old_y_pos-1]
+            new_room = self.room_table[old_x_pos, old_y_pos - 1]
         return new_room
 
     def generate_world(self, lvl: int):
@@ -115,7 +115,7 @@ class World:
         self.apply_way(way)
         all_way = self.add_secondary_ways(way, lvl * 20)
         self.sort_room_direction()
-        self.add_lock_door(all_way, lvl)
+        self.add_lock_door(all_way, lvl * 2)
 
     def init_default_word(self, lvl: int):
         nb_row = lvl * 4
@@ -131,7 +131,7 @@ class World:
 
     def init_win_pos(self, world_size: [int]):
         win_y = random.randint(0, world_size[1] - 1)
-        win_x = random.randint(math.ceil(world_size[0]*0.66), world_size[0]-1)
+        win_x = random.randint(math.ceil(world_size[0] * 0.66), world_size[0] - 1)
         self.room_table[win_x, win_y].is_win = True
         return [win_x, win_y]
 
@@ -168,8 +168,8 @@ class World:
 
     def apply_way(self, way: [[int]]):
         for i in range(1, len(way) - 1):
-            self.room_table[way[i][0], way[i][1]].directions.append(find_direction(way[i], way[i-1]))
-            self.room_table[way[i][0], way[i][1]].directions.append(find_direction(way[i], way[i+1]))
+            self.room_table[way[i][0], way[i][1]].directions.append(find_direction(way[i], way[i - 1]))
+            self.room_table[way[i][0], way[i][1]].directions.append(find_direction(way[i], way[i + 1]))
         self.room_table[way[0][0], way[0][1]].directions.append(find_direction(way[0], way[1]))
         self.room_table[way[-1][0], way[-1][1]].directions.append(find_direction(way[-1], way[-2]))
 
@@ -182,7 +182,7 @@ class World:
                 continue
             loc_end_second_way = [x + y for x, y in zip(loc_start_second_way, random.choice(mod_available))]
             self.apply_way([loc_start_second_way, loc_end_second_way])
-            way_out.insert(way_out.index(loc_start_second_way)+1, loc_end_second_way)
+            way_out.insert(way_out.index(loc_start_second_way) + 1, loc_end_second_way)
         return way_out
 
     def sort_room_direction(self):
@@ -194,15 +194,23 @@ class World:
         for i in range(len(all_way) - 1):
             diff_loc.append(sum([abs(x - y) for x, y in zip(all_way[i], all_way[i + 1])]))
         for i in range(nb_lock):
-            loc_add_lock = random.choice(all_way[1:])
+            loc_available_to_add_lock = [x for x in all_way[1:] if
+                                         self.room_table[x[0], x[1]].condition_to_enter is None]
+            loc_add_lock = random.choice(loc_available_to_add_lock)
             key = Obj('Key %d' % i)
-            index_loc_max_to_add_key = all_way.index(loc_add_lock)-1
-            dead_end_available = [i for i in range(index_loc_max_to_add_key) if diff_loc[i] != 1]
+            index_loc_max_to_add_key = all_way.index(loc_add_lock) - 1
+            dead_end_available = [i for i in range(index_loc_max_to_add_key) if diff_loc[i] != 1 and
+                                  self.room_table[all_way[i][0], all_way[i][1]].obj_in_room is None]
             if dead_end_available:
                 index_add_key = random.choice(dead_end_available)
                 loc_add_key = all_way[index_add_key]
             else:
-                loc_add_key = random.choice(all_way[:index_loc_max_to_add_key])
+                loc_available_to_add_key = [x for x in all_way[1:index_loc_max_to_add_key] if
+                                            self.room_table[x[0], x[1]].obj_in_room is None]
+                if loc_available_to_add_key:
+                    loc_add_key = random.choice(loc_available_to_add_key)
+                else:
+                    continue
             self.room_table[loc_add_lock[0], loc_add_lock[1]].condition_to_enter = key
             self.room_table[loc_add_key[0], loc_add_key[1]].obj_in_room = key
 
